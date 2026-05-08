@@ -1,0 +1,56 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mall-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mall_system
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    networks:
+      - mall-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: mall-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - mall-network
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: mall-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/mall_system
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATA_REDIS_HOST=redis
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - mall-network
+
+volumes:
+  mysql-data:
+  redis-data:
+
+networks:
+  mall-network:
+    driver: bridge
