@@ -1,5 +1,5 @@
 # Database Design Document
-
+本文件所有表结构均遵循 database.md 中的规范，如有冲突以 database.md 为准。
 本文件定义：
 
 - 当前项目数据库表结构
@@ -252,6 +252,7 @@ CREATE TABLE product_sku (
     ON UPDATE CURRENT_TIMESTAMP,
 
     deleted TINYINT NOT NULL DEFAULT 0,
+	version INT DEFAULT 0 COMMENT '乐观锁版本号',
 
     UNIQUE KEY uk_sku_code (sku_code),
 

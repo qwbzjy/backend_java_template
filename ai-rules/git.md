@@ -1,6 +1,6 @@
 # Git Rules
 
-提交规范：
+# 提交规范：
 
 ```text
 feat: 新功能
@@ -9,7 +9,7 @@ refactor: 重构
 docs: 文档
 test: 测试
 ```
-
+提交前必须执行 mvn clean compile 确保无编译错误，以及 mvn checkstyle:check（如果引入）。
 ---
 
 # 分支规范

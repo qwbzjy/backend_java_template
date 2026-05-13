@@ -35,3 +35,7 @@
 - 参数校验
 - 防重复提交
 - 权限校验
+
+防重复提交具体实现方案：使用 @RepeatSubmit 注解 + Redis 过期 key。
+敏感配置使用 Jasypt 加密或环境变量，禁止硬编码。
+本地开发使用 dev profile，生产使用 prod

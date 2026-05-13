@@ -320,6 +320,8 @@ delete from
 deleted tinyint
 ```
 
+MyBatis-Plus 全局配置 logic-delete-field: deleted
+所有自定义 SQL 必须手动添加 AND deleted = 0
 ---
 
 # 查询规范
@@ -419,7 +421,7 @@ version int NOT NULL DEFAULT 0
 - 库存扣减
 - 支付状态更新
 - 并发控制
-
+所有涉及库存、金额变更的表必须包含 version 字段
 ---
 
 # 库存设计规范

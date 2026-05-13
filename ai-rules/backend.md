@@ -18,36 +18,61 @@
 ```text
 project-root
 │
-├── common
-├── gateway
-├── auth-service
-├── user-service
-├── product-service
-├── order-service
-├── payment-service
-├── logistics-service
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com.wb.mall
+│   │   │       ├── common
+│   │   │       ├── config
+│   │   │       ├── security
+│   │   │       ├── user
+│   │   │       ├── product
+│   │   │       ├── order
+│   │   │       ├── payment
+│   │   │       └── logistics
+│   │   └── resources
+│   └── test
+├── pom.xml
+└── README.md
 ```
-common 模块只应该包含公共组件，不应该有业务代码
+本项目为单体 Maven 工程，所有业务模块（user、product、order、payment、logistics）直接放在 com.wb.mall 包下，按业务分包，不拆分为独立 Maven 模块。
 
 ---
 
 # 包结构规范
 
 ```text
-com.xxx.project
-
-├── controller
-├── service
-├── service.impl
-├── mapper
-├── entity
-├── dto
-├── vo
-├── config
-├── exception
-├── common
+com.wb.mall
+│
+├── common                # 公共组件（全局异常、统一返回、工具类等）
+├── config                # 配置类（Swagger、Redis、MyBatis-Plus等）
+├── security              # Spring Security + JWT 配置
+│
+├── user                  # 用户模块
+│   ├── controller
+│   ├── service
+│   ├── service.impl
+│   ├── mapper
+│   ├── entity
+│   ├── dto
+│   └── vo
+├── product               # 商品模块
+│   ├── controller
+│   ├── service
+│   ├── service.impl
+│   ├── mapper
+│   ├── entity
+│   ├── dto
+│   └── vo
+├── order                 # 订单模块
+│   └── ...
+├── payment               # 支付模块
+│   └── ...
+└── logistics             # 物流模块
+    └── ...
 ```
-
+每个业务模块内部独立维护自己的 controller、service、mapper、entity、dto、vo。
+跨模块调用直接通过 Service 层方法调用，禁止跨 Controller 调用。
 ---
 
 # Controller 规范
@@ -103,7 +128,7 @@ VO：
 - 仅用于返回数据
 
 禁止 Entity 直接返回前端。
-
+DTO/VO 也可以使用 @Data，但需注意 @EqualsAndHashCode 的潜在问题。
 ---
 
 # 日志规范
@@ -117,3 +142,8 @@ VO：
 禁止：
 
 - System.out.println
+
+# 缓存规范
+- 商品详情缓存 key = product:detail:{id}，过期 30 分钟
+- 商品分类列表缓存 1 小时
+- 更新商品时必须清除对应缓存
